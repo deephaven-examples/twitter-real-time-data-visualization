@@ -241,17 +241,16 @@ count_sorted = count.sort(order_by=["Number"], order=[SortDirection.DESCENDING])
 count_sorted_top = count_sorted.head(TOP_N)
 
 # Draw real-time bar chart with the frequency of the top N words
-bar_fig = plt.figure()
-bar_fig_ax = bar_fig.subplots()
-plt.xlabel("Top words")
+bar_fig, bar_fig_ax = plt.subplots()
 plt.xticks(rotation=90)
-plt.ylabel("No. of mentions")
-plt.title("Top most popular words in tweets")
+rects = bar_fig_ax.bar(range(TOP_N), [0] * TOP_N)
 def animate_bar_plot_fig(data, update):
-    bar_fig_ax.bar(data["word"], data["Number"], color ='green')
-
+    for rect, h in zip(rects, data["Number"]):
+        rect.set_height(h)
+    bar_fig_ax.set_xticklabels(data["word"])
+    bar_fig_ax.relim()
+    bar_fig_ax.autoscale_view(True, True, True)
 bar_plot_ani = TableAnimation(bar_fig, count_sorted_top, animate_bar_plot_fig)
-
 
 # Draw real-time word cloud for top N words
 wordcloud_fig = plt.figure()
