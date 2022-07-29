@@ -13,7 +13,8 @@ docker-compose up  --build -d
 ```
 
 Navigate to [http://localhost:10000/ide](http://localhost:10000/ide) and open the `main.py` notebook to see examples of real-time data visualizations.
-Please note you might need to download stopwords from `nltk` library:
+Please note you might need to download corpus.words and stopwords from `nltk` library:
 ```
+nltk.download('words')
 nltk.download('stopwords')
 ```
