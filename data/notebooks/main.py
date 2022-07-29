@@ -13,7 +13,6 @@ import threading
 import nltk
 from collections import Counter
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 from wordcloud import WordCloud, STOPWORDS
 
 import deephaven.dtypes as dht
@@ -30,6 +29,8 @@ TWITTER_ENDPOINT_URL = "https://api.twitter.com/2/tweets/search/stream"
 TOP_N = 20  # TOP N most frequent words in tweets
 TERM_1 = 'good'
 TERM_2 = 'news'
+
+corpus = set(nltk.corpus.words.words())
 
 twitter_table_col_definitions = {"tweet": dht.string, "clean_tweet": dht.string, "length": dht.int32, "category": dht.string, "point_x": dht.double, "point_y": dht.double}
 twitter_table_writer = DynamicTableWriter(twitter_table_col_definitions)
@@ -115,11 +116,10 @@ def preprocess(tweet):
     """
     Method to preprocess tweets (remove @ user names, non-alphabetic characters, stem words)
     """
-    ps = PorterStemmer()
     txt = ' '.join(word for word in tweet.split() if not word.startswith('@'))
     txt = re.sub('[^a-zA-Z]', ' ', txt)
     txt = txt.lower().split()
-    txt = [ps.stem(word) for word in txt if not word in stopwords.words('english') and len(word) > 3]
+    txt = [word for word in txt if not word in stopwords.words('english') and word in corpus and len(word) > 3] 
     txt = ' '.join(txt)
     return txt
 
@@ -242,11 +242,12 @@ count_sorted_top = count_sorted.head(TOP_N)
 
 # Draw real-time bar chart with the frequency of the top N words
 bar_fig, bar_fig_ax = plt.subplots()
-plt.xticks(rotation=90)
+plt.xticks(rotation=20)
 rects = bar_fig_ax.bar(range(TOP_N), [0] * TOP_N)
+bar_fig_ax.set_xticks(range(TOP_N))
 def animate_bar_plot_fig(data, update):
     for rect, h in zip(rects, data["Number"]):
-        rect.set_height(h)
+        rect.set_height(h) 
     bar_fig_ax.set_xticklabels(data["word"])
     bar_fig_ax.relim()
     bar_fig_ax.autoscale_view(True, True, True)
@@ -290,8 +291,8 @@ venn_ax.plot(X_1, Y1_UPPER, color='k')
 venn_ax.plot(X_1, Y1_LOWER, color='k')
 venn_ax.plot(X_2, Y2_UPPER, color='k')
 venn_ax.plot(X_2, Y2_LOWER, color='k')
-venn_ax.text(SHIFT_1 - RADIUS_1 - 2, 0, TERM_1.upper(), ha='center', color='white')
-venn_ax.text(SHIFT_2 + RADIUS_2 + 2, 0, TERM_2.upper(), ha='center', color='white')
+venn_ax.text(SHIFT_1 - RADIUS_1 + 2, 10, TERM_1.upper(), ha='center', color='white')
+venn_ax.text(SHIFT_2 + RADIUS_2 - 2, 10, TERM_2.upper(), ha='center', color='white')
 plt.gca().axes.get_xaxis().set_visible(False)
 plt.gca().axes.get_yaxis().set_visible(False)
 plt.axis('equal')
