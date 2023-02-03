@@ -1,6 +1,8 @@
 # twitter-real-time-data-visualization
 This example pulls public tweets in real-time and builds various animated charts. 
 
+Note: Free access to the Twitter API is no longer available. However, the code and concepts in this blog are still valid for users with a paid developer account.
+
 The repository integrates [Deephaven](https://deephaven.io/) with [matplotlib](https://matplotlib.org/), a plotting library for the [Python](https://www.python.org/) programming language.
 
 To get started, run:
