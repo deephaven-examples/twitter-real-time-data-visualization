@@ -18,3 +18,7 @@ Please note you might need to download corpus.words and stopwords from `nltk` li
 nltk.download('words')
 nltk.download('stopwords')
 ```
+
+## Note 
+
+The code in this repository is built for Deephaven Community Core v0.15.0. No guarantee of forward or backward compatibility is given.
